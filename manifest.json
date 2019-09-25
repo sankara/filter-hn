@@ -1,0 +1,20 @@
+{
+
+  "manifest_version": 2,
+  "name": "Filter HN Scum",
+  "version": "1.0",
+
+  "description": "Filter toxic users of HN",
+
+  "icons": {
+    "48": "icons/filter-hn.png"
+  },
+
+  "content_scripts": [
+    {
+      "matches": ["*://news.ycombinator.com/*"],
+        "js": [ "jquery-3.4.1.min.js", "main.js"]
+    }
+  ]
+
+}
