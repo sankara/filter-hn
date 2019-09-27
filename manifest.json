@@ -12,7 +12,7 @@
     "content_scripts": [
         {
             "matches": ["*://news.ycombinator.com/*"],
-            "js": [ "jquery-3.4.1.min.js", "main.js"]
+            "js": [ "main.js"]
         }
     ],
     "options_ui": {
