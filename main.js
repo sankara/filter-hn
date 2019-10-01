@@ -40,10 +40,14 @@ function hideUser(user) {
 
 function addHideLink() {
     registerToRunOnHNLinks((link) => {
+        if(link.nextSibling.className == "lnkHide")
+            return;
         console.log("Adding hide link to: " + link);
         var hideLink = document.createElement("a");
         hideLink.innerHTML = " (hide) ";
         hideLink.style.cursor = "pointer";
+        hideLink.style.padding = "0 1px";
+        hideLink.className = "lnkHide";
         hideLink.onclick = (e) => {
             hideUser(link.textContent);
         };
