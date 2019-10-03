@@ -1,45 +1,37 @@
 console.log("main.js");
 
-var closuresToRun = [];
-
 Element.prototype.appendAfter = function (element) {
     element.parentNode.insertBefore(this, element.nextSibling);
 },false;
 
-function runOnHNLinks() {
+function runOnHNLinks(...closures) {
     var matchedLinks = document.querySelectorAll(".hnuser");
     for(var i = 0; i < matchedLinks.length; i++) {
-        console.log("Running closures on: " + matchedLinks[i]);
-        for(var j = 0; j < closuresToRun.length; j++) {
-            closuresToRun[j](matchedLinks[i]);
+        for(var j = 0; j < closures.length; j++) {
+            closures[j](matchedLinks[i]);
         }
     }
 }
 
-function registerToRunOnHNLinks(closure) {
-    closuresToRun.push(closure);
-}
 
 function hideUnsavoryCommenters(hiddenUsers) {
-    registerToRunOnHNLinks((link) => {
+    return (link) => {
         console.log("Checking to hide comment: " + link);
         if(hiddenUsers.includes(link.textContent))
             link.closest("tr.comtr").className += "noshow coll";
-    });
-    //recoll();
+    };
 }
 
 function hideUser(user) {
-    browser.storage.sync.get().then((settings) => {
-        settings.hiddenUsers.push(user);
-        browser.storage.sync.set(settings);
-        hideUnsavoryCommenters(settings.hiddenUsers);
-        runOnHNLinks();
+    updateSettings("hiddenUsers", (hiddenUsers) => {
+        hiddenUsers.push(user);
+        runOnHNLinks(hideUnsavoryCommenters(hiddenUsers));
+        return hiddenUsers;
     });
 }
 
 function addHideLink() {
-    registerToRunOnHNLinks((link) => {
+    return (link) => {
         if(link.nextSibling.className == "lnkHide")
             return;
         console.log("Adding hide link to: " + link);
@@ -52,15 +44,15 @@ function addHideLink() {
             hideUser(link.textContent);
         };
         hideLink.appendAfter(link);
-    });
+    };
 }
 
 function onLoad() {
     console.log("Executing onLoad");
-    browser.storage.sync.get().then((settings) => {
-        hideUnsavoryCommenters(settings.hiddenUsers);
-        addHideLink();
-        runOnHNLinks();
+    getConfig(undefined, (settings) => {
+        runOnHNLinks(
+            hideUnsavoryCommenters(settings.hiddenUsers),
+            addHideLink());
     });
 }
 

@@ -18,6 +18,7 @@ function restoreOptions(settings) {
     for(var i = 0; i < users.length; i++) {
         var li = document.createElement("li");
         li.textContent = users[i];
+
         userList.appendChild(li);
     }
     ctrUserList.parentNode.replaceChild(userList, ctrUserList);
