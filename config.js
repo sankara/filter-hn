@@ -20,5 +20,6 @@ function updateSettings(key, closure) {
             settings[key] = closure(settings[key]);
         else
             settings = closure(settings);
+        browser.storage.sync.set(settings);
     });
 }

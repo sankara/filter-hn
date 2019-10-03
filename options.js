@@ -9,22 +9,38 @@ function saveOptions(e) {
     e.preventDefault();
 }
 
-function restoreOptions(settings) {
-    var users = settings.hiddenUsers;
-    var ctrUserList = document.querySelector(".ctrHiddenUsers");
+function restoreOptions(hiddenUsers) {
+    let ctrUserList = document.querySelector(".ctrHiddenUsers");
 
-    var userList = document.createElement("ul");
+    let userList = document.createElement("ul");
     userList.className = "ctrHiddenUsers";
-    for(var i = 0; i < users.length; i++) {
-        var li = document.createElement("li");
-        li.textContent = users[i];
+
+    hiddenUsers.forEach((user) => {
+        let li = document.createElement("li");
+        li.textContent = user;
+
+        let unHideLink = document.createElement("a");
+        unHideLink.style.padding = "0 5px";
+        unHideLink.style.cursor = "pointer";
+        unHideLink.innerHTML = "(x)";
+        unHideLink.onclick = (e) => {
+            console.log(user);
+            unHideUser(user, (hiddenUsers) => {
+                restoreOptions(hiddenUsers);
+            });
+        };
+
+        li.appendChild(unHideLink);
 
         userList.appendChild(li);
-    }
+    });
+
     ctrUserList.parentNode.replaceChild(userList, ctrUserList);
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-    browser.storage.sync.get().then(restoreOptions);
+    getConfig("hiddenUsers", (hiddenUsers) => {
+        restoreOptions(hiddenUsers);
+    });
 });
 document.querySelector("form").addEventListener("submit", saveOptions);

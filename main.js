@@ -1,5 +1,3 @@
-console.log("main.js");
-
 Element.prototype.appendAfter = function (element) {
     element.parentNode.insertBefore(this, element.nextSibling);
 },false;
@@ -13,10 +11,8 @@ function runOnHNLinks(...closures) {
     }
 }
 
-
 function hideUnsavoryCommenters(hiddenUsers) {
     return (link) => {
-        console.log("Checking to hide comment: " + link);
         if(hiddenUsers.includes(link.textContent))
             link.closest("tr.comtr").className += "noshow coll";
     };
@@ -30,13 +26,20 @@ function hideUser(user) {
     });
 }
 
+function unHideUser(user, callback) {
+    updateSettings("hiddenUsers", (hiddenUsers) => {
+        hiddenUsers.splice(hiddenUsers.indexOf(user), 1);
+        callback(hiddenUsers);
+        return hiddenUsers;
+    });
+}
+
 function addHideLink() {
     return (link) => {
         if(link.nextSibling.className == "lnkHide")
             return;
-        console.log("Adding hide link to: " + link);
         var hideLink = document.createElement("a");
-        hideLink.innerHTML = " (hide) ";
+        hideLink.innerHTML = "(hide)";
         hideLink.style.cursor = "pointer";
         hideLink.style.padding = "0 1px";
         hideLink.className = "lnkHide";
