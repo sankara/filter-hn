@@ -1,9 +1,9 @@
 {
     "manifest_version": 2,
-    "name": "Filter HN Scum",
+    "name": "Filter HN Users",
     "version": "1.0",
 
-    "description": "Filter toxic users of HN",
+    "description": "Filter unsavoury users of HN",
 
     "icons": {
         "48": "icons/filter-hn.png"
