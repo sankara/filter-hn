@@ -2,11 +2,11 @@ const path = require("path");
 
 module.exports = {
     entry: {
-        background_scripts: "./src/main.js",
+        main: "./src/main.js",
         options: "./src/options.js"
     },
     output: {
         path: path.resolve(__dirname, "addon"),
-        filename: "[name]/index.js"
+        filename: "scripts/[name].js"
     }
 };
