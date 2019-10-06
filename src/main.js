@@ -1,6 +1,9 @@
+require('./config.js');
+
 Element.prototype.appendAfter = function (element) {
     element.parentNode.insertBefore(this, element.nextSibling);
 },false;
+
 
 function runOnHNLinks(...closures) {
     var matchedLinks = document.querySelectorAll(".hnuser");
