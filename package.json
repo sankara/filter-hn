@@ -1,27 +1,12 @@
 {
   "name": "filter-hn",
-  "version": "1.0.0",
-  "description": "",
-  "main": "main.js",
+  "version": "0.0.1",
+  "description": "Remove unsavoury HN users",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "webpack"
+    "dev": "webextension-toolbox dev",
+    "build": "webextension-toolbox build"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/sankara/filter-hn.git"
-  },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/sankara/filter-hn/issues"
-  },
-  "homepage": "https://github.com/sankara/filter-hn#readme",
   "devDependencies": {
-    "@babel/core": "^7.6.2",
-    "babel-loader": "^8.0.6",
-    "webpack": "^4.41.0",
-    "webpack-cli": "^3.3.9"
+    "webextension-toolbox": "latest"
   }
 }

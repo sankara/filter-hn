@@ -1,9 +1,10 @@
-//This is so primitive. Need a high level library that can replace, append, remove
-//properties
+import Config from './utils/config';
+import unHideUser from './filter.js';
+
+
 function saveOptions(e) {
-    browser.storage.sync.get().then((settings) => {
+    Config.updateConfig(undefined, (settings) => {
         settings.hiddenUsers.push(document.querySelector("#txtUser").value);
-        browser.storage.sync.set(settings);
         restoreOptions(settings);
     });
     e.preventDefault();
@@ -24,7 +25,6 @@ function restoreOptions(hiddenUsers) {
         unHideLink.style.cursor = "pointer";
         unHideLink.innerHTML = "(x)";
         unHideLink.onclick = (e) => {
-            console.log(user);
             unHideUser(user, (hiddenUsers) => {
                 restoreOptions(hiddenUsers);
             });
@@ -39,7 +39,7 @@ function restoreOptions(hiddenUsers) {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-    getConfig("hiddenUsers", (hiddenUsers) => {
+    Config.getConfig("hiddenUsers", (hiddenUsers) => {
         restoreOptions(hiddenUsers);
     });
 });

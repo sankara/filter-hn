@@ -1,8 +1,8 @@
-require('./config.js');
+import Config from './utils/config';
 
 Element.prototype.appendAfter = function (element) {
     element.parentNode.insertBefore(this, element.nextSibling);
-},false;
+}, false;
 
 
 function runOnHNLinks(...closures) {
@@ -22,7 +22,7 @@ function hideUnsavoryCommenters(hiddenUsers) {
 }
 
 function hideUser(user) {
-    updateSettings("hiddenUsers", (hiddenUsers) => {
+    Config.updateSettings("hiddenUsers", (hiddenUsers) => {
         hiddenUsers.push(user);
         runOnHNLinks(hideUnsavoryCommenters(hiddenUsers));
         return hiddenUsers;
@@ -30,12 +30,14 @@ function hideUser(user) {
 }
 
 function unHideUser(user, callback) {
-    updateSettings("hiddenUsers", (hiddenUsers) => {
+    Config.updateSettings("hiddenUsers", (hiddenUsers) => {
         hiddenUsers.splice(hiddenUsers.indexOf(user), 1);
         callback(hiddenUsers);
         return hiddenUsers;
     });
 }
+
+export default unHideUser;
 
 function addHideLink() {
     return (link) => {
@@ -44,7 +46,7 @@ function addHideLink() {
         var hideLink = document.createElement("a");
         hideLink.innerHTML = "(hide)";
         hideLink.style.cursor = "pointer";
-        hideLink.style.padding = "0 1px";
+        hideLink.style.padding = "0 3px";
         hideLink.className = "lnkHide";
         hideLink.onclick = (e) => {
             hideUser(link.textContent);
@@ -54,8 +56,9 @@ function addHideLink() {
 }
 
 function onLoad() {
-    console.log("Executing onLoad");
-    getConfig(undefined, (settings) => {
+    console.log("Executing onLoad!");
+    Config.initSettings({"hiddenUsers": []});
+    Config.getConfig(undefined, (settings) => {
         runOnHNLinks(
             hideUnsavoryCommenters(settings.hiddenUsers),
             addHideLink());
