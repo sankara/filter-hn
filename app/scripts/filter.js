@@ -1,4 +1,5 @@
 import Config from './utils/config';
+import { hideUser, unHideUser } from './utils/user';
 
 Element.prototype.appendAfter = function (element) {
     element.parentNode.insertBefore(this, element.nextSibling);
@@ -22,24 +23,6 @@ function hideUnsavoryCommenters(hiddenUsers) {
     };
 }
 
-function hideUser(user, callback=()=>{}) {
-    Config.updateSettings("hiddenUsers", (hiddenUsers) => {
-        hiddenUsers.push(user);
-        callback(hiddenUsers);
-        return hiddenUsers;
-    });
-}
-
-function unHideUser(user, callback) {
-    Config.updateSettings("hiddenUsers", (hiddenUsers) => {
-        hiddenUsers.splice(hiddenUsers.indexOf(user), 1);
-        callback(hiddenUsers);
-        return hiddenUsers;
-    });
-}
-
-export {hideUser, unHideUser};
-
 function addHideLink() {
     return (link) => {
         if(link.nextSibling.className == "lnkHide")
@@ -56,15 +39,21 @@ function addHideLink() {
     };
 }
 
-function onLoad() {
-    console.log("Executing onLoad!");
-    Config.initSettings({"hiddenUsers": []});
-    Config.getConfig(undefined, (settings) => {
+function handleStorageChanges(changes, area) {
+    if(area === 'sync' && changes.hiddenUsers &&
+       changes.hiddenUsers.newValue != changes.hiddenUsers.oldValue) {
         runOnHNLinks(
-            hideUnsavoryCommenters(settings.hiddenUsers),
-            addHideLink());
-    });
-    //TODO: Subscribe to browser.storage.onChanged(changes, area) and trigger things accordingly
+            hideUnsavoryCommenters(changes.hiddenUsers.newValue));
+    }
 }
+console.log("Executing onLoad!");
+Config.initSettings({"hiddenUsers": []});
+console.log("blah");
 
-onLoad();
+Config.getConfig(undefined, (settings) => {
+    runOnHNLinks(
+        hideUnsavoryCommenters(settings.hiddenUsers),
+        addHideLink());
+});
+
+browser.storage.onChanged.addListener(handleStorageChanges);

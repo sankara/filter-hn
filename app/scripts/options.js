@@ -1,5 +1,5 @@
 import Config from './utils/config';
-import { hideUser, unHideUser } from './filter.js';
+import { hideUser, unHideUser } from './utils/user';
 import React from 'react';
 import ReactDOM from 'react-dom';
 
@@ -15,7 +15,6 @@ class BlockedUsers extends React.Component {
     }
 
     setHiddenUsers(hiddenUsers) {
-        console.log(hiddenUsers);
         this.setState({hiddenUsers: hiddenUsers});
     }
 
@@ -61,7 +60,6 @@ class BlockUser extends React.Component {
     }
 
     hideUser(e) {
-        console.log(this.state.value);
         hideUser(this.state.value, this.blockedUserComponent.setHiddenUsers);
     }
 
