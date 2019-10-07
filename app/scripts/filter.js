@@ -16,15 +16,16 @@ function runOnHNLinks(...closures) {
 
 function hideUnsavoryCommenters(hiddenUsers) {
     return (link) => {
-        if(hiddenUsers.includes(link.textContent))
-            link.closest("tr.comtr").className += "noshow coll";
+        link.closest("tr.comtr").classList[
+            hiddenUsers.includes(link.textContent) ? 'add' : 'remove'
+        ]("noshow");
     };
 }
 
-function hideUser(user) {
+function hideUser(user, callback=()=>{}) {
     Config.updateSettings("hiddenUsers", (hiddenUsers) => {
         hiddenUsers.push(user);
-        runOnHNLinks(hideUnsavoryCommenters(hiddenUsers));
+        callback(hiddenUsers);
         return hiddenUsers;
     });
 }
@@ -37,7 +38,7 @@ function unHideUser(user, callback) {
     });
 }
 
-export default unHideUser;
+export {hideUser, unHideUser};
 
 function addHideLink() {
     return (link) => {
@@ -63,6 +64,7 @@ function onLoad() {
             hideUnsavoryCommenters(settings.hiddenUsers),
             addHideLink());
     });
+    //TODO: Subscribe to browser.storage.onChanged(changes, area) and trigger things accordingly
 }
 
 onLoad();

@@ -1,46 +1,95 @@
 import Config from './utils/config';
-import unHideUser from './filter.js';
+import { hideUser, unHideUser } from './filter.js';
+import React from 'react';
+import ReactDOM from 'react-dom';
 
 
-function saveOptions(e) {
-    Config.updateConfig(undefined, (settings) => {
-        settings.hiddenUsers.push(document.querySelector("#txtUser").value);
-        restoreOptions(settings);
-    });
-    e.preventDefault();
+class BlockedUsers extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = props.options;
+
+        this.setHiddenUsers = this.setHiddenUsers.bind(this);
+        this.hideUser = this.hideUser.bind(this);
+        this.userList = this.userList.bind(this);
+    }
+
+    setHiddenUsers(hiddenUsers) {
+        console.log(hiddenUsers);
+        this.setState({hiddenUsers: hiddenUsers});
+    }
+
+    hideUser(e) {
+        let user = e.currentTarget.dataset.user;
+        unHideUser(user, this.setHiddenUsers);
+    }
+
+    userList() {
+        return this.state.hiddenUsers.map((user) => {
+            return (
+                    <li style={{padding : "0 5px"}}
+                key={user}>
+                    {user}
+                    <a style={{padding: "0 3px", cursor: "pointer"}}
+                data-user={user}
+                onClick={this.hideUser}>(x)</a>
+                </li>);
+        });
+    }
+
+    render() {
+        return (
+                <ul>
+                  {this.userList()}
+                </ul>
+        );
+    }
 }
 
-function restoreOptions(hiddenUsers) {
+class BlockUser extends React.Component {
+    constructor(props) {
+        super(props);
+        this.blockedUserComponent = props.blockedUserComponent;
+        this.state = {value: ""};
+
+        this.handleChange = this.handleChange.bind(this);
+        this.hideUser = this.hideUser.bind(this);
+    }
+
+    handleChange(e) {
+        this.setState({value: e.target.value});
+    }
+
+    hideUser(e) {
+        console.log(this.state.value);
+        hideUser(this.state.value, this.blockedUserComponent.setHiddenUsers);
+    }
+
+    render() {
+        return (
+                <form onSubmit={this.hideUser}>
+                  <label>
+                   Block User:
+                   <input type="text" value={this.state.value} onChange={this.handleChange} />
+                  </label>
+                  <input type="submit" value="Add" />
+                </form>
+        );
+    }
+}
+
+function restoreOptions(settings) {
     let ctrUserList = document.querySelector(".ctrHiddenUsers");
+    let blockedUserComponent = <BlockedUsers options={settings}/>;
 
-    let userList = document.createElement("ul");
-    userList.className = "ctrHiddenUsers";
+    ReactDOM.render(blockedUserComponent, ctrUserList);
 
-    hiddenUsers.forEach((user) => {
-        let li = document.createElement("li");
-        li.textContent = user;
-
-        let unHideLink = document.createElement("a");
-        unHideLink.style.padding = "0 5px";
-        unHideLink.style.cursor = "pointer";
-        unHideLink.innerHTML = "(x)";
-        unHideLink.onclick = (e) => {
-            unHideUser(user, (hiddenUsers) => {
-                restoreOptions(hiddenUsers);
-            });
-        };
-
-        li.appendChild(unHideLink);
-
-        userList.appendChild(li);
-    });
-
-    ctrUserList.parentNode.replaceChild(userList, ctrUserList);
+    let ctrUserForm = document.querySelector(".ctrUserForm");
+    ReactDOM.render(<BlockUser blockedUserComponent={blockedUserComponent}/>, ctrUserForm);
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-    Config.getConfig("hiddenUsers", (hiddenUsers) => {
-        restoreOptions(hiddenUsers);
+    Config.getConfig(undefined, (settings) => {
+        restoreOptions(settings);
     });
 });
-document.querySelector("form").addEventListener("submit", saveOptions);
