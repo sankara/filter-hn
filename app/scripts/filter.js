@@ -17,9 +17,11 @@ function runOnHNLinks(...closures) {
 
 function hideUnsavoryCommenters(hiddenUsers) {
     return (link) => {
+        if(!link.closest("tr.comtr"))
+            return;
         link.closest("tr.comtr").classList[
             hiddenUsers.includes(link.textContent) ? 'add' : 'remove'
-        ]("noshow");
+        ]('noshow');
     };
 }
 
@@ -48,7 +50,6 @@ function handleStorageChanges(changes, area) {
 }
 console.log("Executing onLoad!");
 Config.initSettings({"hiddenUsers": []});
-console.log("blah");
 
 Config.getConfig(undefined, (settings) => {
     runOnHNLinks(
