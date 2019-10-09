@@ -1,10 +1,18 @@
 # filter-hn
 
-Remove unsavoury HN users
+This is a very basic simple addon to block certain users from Hacker News. You'll
+maintain your own list of users you don't want to engage with and their comments
+are automatically hidden. The user list is synced across browser instances (but
+not across browsers). There'd be no global list. This is a personal add-on I built
+for my convenience. Built and tested for Fx. Verified to work on Chrome.
 
+
+## Download
+
+Use the packaged xpi
 ## Install
 
-	$ npm install
+	$ npm
 
 ## Development
 
@@ -22,7 +30,7 @@ Remove unsavoury HN users
 
 ## Environment
 
-The build tool also defines a variable named `process.env.NODE_ENV` in your scripts. 
+The build tool also defines a variable named `process.env.NODE_ENV` in your scripts.
 
 ## Docs
 
